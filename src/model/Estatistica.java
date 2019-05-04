@@ -1,12 +1,15 @@
 package model;
 
+import org.json.JSONObject;
 
-public class Estatistica {
+public class Estatistica implements JsonFormatter {
 	
 	private Jogador jogador;
 	private int passeDeBola;
 	private int gols;
 	private int assistencias;
+	private Integer id;
+	
 	
 	
 	public Estatistica(Jogador jogador, int passeDeBola, int gols, int assistencias) {
@@ -15,6 +18,10 @@ public class Estatistica {
 		this.passeDeBola = passeDeBola;
 		this.gols = gols;
 		this.assistencias = assistencias;
+	}
+	
+	public Estatistica() {
+		
 	}
 
 
@@ -56,19 +63,30 @@ public class Estatistica {
 	public void setAssistencias(int assistencias) {
 		this.assistencias = assistencias;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+	
+	@Override
+	public JSONObject toJson() {
+		JSONObject obj = new JSONObject();
+		obj.put("id", this.id);
+		obj.put("Jogador", this.jogador);
+		obj.put("Passe de bola", this.passeDeBola);
+		obj.put("Gols", this.gols);
+		obj.put("Assistencias", this.assistencias);
+		
+		return obj;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return this.id == ((Estatistica) obj).id;
+	}
+	
 }

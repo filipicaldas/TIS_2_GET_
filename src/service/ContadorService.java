@@ -12,22 +12,29 @@ import dao.CampeonatoDAO;
 import dao.ContadorCartaoDAO;
 import dao.JogadorDAO;
 import model.Contadordecartoes;
-import model.Jogador;
-import model.enums.Escala;
 
 public class ContadorService {
 	private ContadorCartaoDAO contadorDAO = new ContadorCartaoDAO();
 	private JogadorDAO jogadorDAO = new JogadorDAO();
 	private CampeonatoDAO campeonatoDAO=new CampeonatoDAO();
 
-	public String consultarContador(Integer id, Request request) {
+	public String consultarContador(Request request) {
+		Query query = request.getQuery();
+		
 		try {
-			Contadordecartoes contador = contadorDAO.get(id);
-			return contador.toJson().toString();
-
+			Integer idJogador = Integer.parseInt(query.get("jogador"));
+			Integer idCampeonato = Integer.parseInt(query.get("campeonato"));
+			
+			for(Contadordecartoes c : contadorDAO.getAll()) {
+				if (c.getJogador().getId() == idJogador
+						&& c.getCampeonato().getId() == idCampeonato) {
+					return c.toJson().toString();
+				}
+			}
+			return "<ERRO>O registro de cartões do jogador não foi encontrado";
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao consultar Contador";
+			return "<ERRO>Erro ao consultar Contador";
 		}
 	}
 
@@ -36,7 +43,7 @@ public class ContadorService {
 			return listaContadoresJSON().toString();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao consultar Contadores";
+			return "<ERRO>Erro ao consultar Contadores";
 		}
 	}
 	public String adicionarContador(Request request) {
@@ -44,18 +51,18 @@ public class ContadorService {
 
 		try {
 			Contadordecartoes contador = new Contadordecartoes();
-			contador.setJogador(query.get("Jogador"));
-			contador.setCampeonato(query.get("Campeonato"));
+			contador.setJogador(jogadorDAO.get(Integer.parseInt( query.get("Jogador"))));
+			contador.setCampeonato(campeonatoDAO.get(Integer.parseInt(query.get("Campeonato"))));
 			contador.setContAmarelo(query.getInteger("Amarelos"));
 			contador.setContVermelho(query.getInteger("Vermelhos"));
 			contador.setSuspenso(query.getBoolean("Suspenso"));
 
 			contadorDAO.add(contador);
 
-			return listaContadoresJSON().toString();
+			return query.get("url");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao adicionar Contador";
+			return "<ERRO>Erro ao adicionar Contador";
 		}
 	}
 	public String atualizarContador(Request request) {
@@ -64,18 +71,18 @@ public class ContadorService {
 		try {
 			Contadordecartoes contador = new Contadordecartoes();
 			contador.setId(query.getInteger("id"));
-			contador.setJogador(query.get("Jogador"));
-			contador.setCampeonato(query.get("Campeonato"));
+			contador.setJogador(jogadorDAO.get(Integer.parseInt( query.get("Jogador"))));
+			contador.setCampeonato(campeonatoDAO.get(Integer.parseInt(query.get("Campeonato"))));
 			contador.setContAmarelo(query.getInteger("Amarelos"));
 			contador.setContVermelho(query.getInteger("Vermelhos"));
 			contador.setSuspenso(query.getBoolean("Suspenso"));
 
 			contadorDAO.update(contador);
 
-			return listaContadoresJSON().toString();
+			return query.get("url");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao atualizar Contador";
+			return "<ERRO>Erro ao atualizar Contador";
 		}
 	}	
 	public String removerContador(Request request) {
@@ -87,10 +94,10 @@ public class ContadorService {
 			
 			contadorDAO.delete(contador);
 			
-			return listaContadoresJSON().toString();
+			return query.get("url");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao excluir Contador.";
+			return "<ERRO>Erro ao excluir Contador.";
 		}
 	}
 

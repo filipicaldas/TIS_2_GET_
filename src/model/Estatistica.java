@@ -76,10 +76,10 @@ public class Estatistica implements JsonFormatter {
 	public JSONObject toJson() {
 		JSONObject obj = new JSONObject();
 		obj.put("id", this.id);
-		obj.put("Jogador", this.jogador);
-		obj.put("Passe de bola", this.passeDeBola);
-		obj.put("Gols", this.gols);
-		obj.put("Assistencias", this.assistencias);
+		obj.put("jogador", this.jogador.toJson());
+		obj.put("passe de bola", this.passeDeBola);
+		obj.put("gols", this.gols);
+		obj.put("assistencias", this.assistencias);
 		
 		return obj;
 	}

@@ -2,7 +2,13 @@ package model;
 
 import org.json.JSONObject;
 
+import exceptions.LimiteCartaoAmareloExcedido;
+import exceptions.LimiteCartaoVermelhoExcedido;
+
 public class Contadordecartoes implements JsonFormatter {
+	static final int LIMITE_AMARELO = 3;
+	static final int LIMITE_VERMELHO = 1;
+	
 	private Jogador jogador;
 	private Campeonato campeonato;
 	private int contAmarelo;
@@ -73,11 +79,11 @@ public class Contadordecartoes implements JsonFormatter {
 	public JSONObject toJson() {
 		JSONObject obj = new JSONObject();
 		obj.put("id", this.id);
-		obj.put("nome", this.jogador.toJson());
+		obj.put("jogador", this.jogador.toJson());
 		obj.put("campeonato", this.campeonato.toJson());
-		obj.put("Quantidade amarelo", this.contAmarelo);
-		obj.put("Quantidade vermelho", this.contVermelho);
-		obj.put("esta suspenso?", this.suspenso);
+		obj.put("cartoesAmarelos", this.contAmarelo);
+		obj.put("cartoesVermelhos", this.contVermelho);
+		obj.put("suspenso", this.suspenso);
 		
 		return obj;
 	}
@@ -86,19 +92,19 @@ public class Contadordecartoes implements JsonFormatter {
 		return this.id == ((Contadordecartoes) obj).id;
 	}
 
-	public void insereCartaoAmarelo() {
-		if (contAmarelo < 3) {
+	public void insereCartaoAmarelo() throws LimiteCartaoAmareloExcedido {
+		if (contAmarelo <  LIMITE_AMARELO) {
 			this.contAmarelo++;
-		} else if (contAmarelo == 3) {
-			this.contAmarelo = 0;
+		} else  {
+			throw new LimiteCartaoAmareloExcedido();
 		}
 	}
 
-	public void insereCartaoVermelho() {
-		if (contVermelho < 1) {
+	public void insereCartaoVermelho() throws LimiteCartaoVermelhoExcedido {
+		if (contVermelho < LIMITE_VERMELHO) {
 			this.contVermelho++;
-		} else if (contVermelho == 1) {
-			this.contVermelho = 0;
+		} else {
+			throw new LimiteCartaoVermelhoExcedido();
 		}
 	}
 

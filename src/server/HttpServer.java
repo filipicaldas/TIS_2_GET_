@@ -12,12 +12,18 @@ import org.simpleframework.http.core.ContainerSocketProcessor;
 import org.simpleframework.transport.connect.Connection;
 import org.simpleframework.transport.connect.SocketConnection;
 
+import controller.CampeonatoController;
+import controller.CartoesController;
 import controller.JogadorController;
+import controller.SituacaoMedicaController;
 import controller.TimeController;
 
 public class HttpServer implements Container {
 	private TimeController timeController = new TimeController();
 	private JogadorController jogadorController = new JogadorController();
+	private SituacaoMedicaController situacaoController = new SituacaoMedicaController();
+	private CartoesController cartoesController = new CartoesController();
+	private CampeonatoController campeonatoController = new CampeonatoController();
 	
 	@Override
 	public void handle(Request request, Response response) {
@@ -27,6 +33,12 @@ public class HttpServer implements Container {
 			timeController.rotearRequisicao(request, response);
 		} else if(path.startsWith("/Jogador")) {
 			jogadorController.rotearRequisicao(request, response);
+		} else if(path.startsWith("/SituacaoMedica")) {
+			situacaoController.rotearRequisicao(request, response);
+		} else if(path.startsWith("/Cartoes")) {
+			cartoesController.rotearRequisicao(request, response);
+		} else if(path.startsWith("/Campeonato")) {
+			campeonatoController.rotearRequisicao(request, response);
 		}
 	}
 	
@@ -35,7 +47,7 @@ public class HttpServer implements Container {
 		// "Address already in use: bind error", 
 		// tente mudar a porta.
 		
-		int porta = 16702;
+		int porta = 8888;
 
 		// Configura uma conexão soquete para o servidor HTTP.
 		Container container = new HttpServer();
@@ -45,7 +57,10 @@ public class HttpServer implements Container {
 		conexao.connect(endereco);
 		
 		//Testa a conexão abrindo o navegador padrão.
-		Desktop.getDesktop().browse(new URI("http://127.0.0.1:" + porta));
+		String url = Class.forName("server.HttpServer").getClassLoader().getResource("").getPath();
+		String pathIndex = "file://" + url.substring(0, url.length() - 4) + "view/html/index.html";
+		
+		Desktop.getDesktop().browse(new URI(pathIndex));
 
 		System.out.println("Tecle ENTER para interromper o servidor...");
 		System.in.read();

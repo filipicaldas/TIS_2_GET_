@@ -14,14 +14,15 @@ import model.Campeonato;
 
 public class CampeonatoService {
 	private CampeonatoDAO campeonatoDAO = new CampeonatoDAO();
+	
 	public String consultarCampeonato(Integer id, Request request) {
 		try {
 			Campeonato campeonato = campeonatoDAO.get(id);
+			
 			return campeonato.toJson().toString();
-
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao consultar Campeonato";
+			return "<ERRO>Erro ao consultar Campeonato";
 		}
 	}
 	public String listarCampeonato(Request request) {
@@ -29,7 +30,7 @@ public class CampeonatoService {
 			return listaCampeonatoJSON().toString();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao consultar Campeonatos";
+			return "<ERRO>Erro ao consultar Campeonatos";
 		}
 	}
 	public String adicionarCampeonato(Request request) {
@@ -41,10 +42,10 @@ public class CampeonatoService {
 			campeonato.setJogos(query.getInteger("jogos"));
 			campeonatoDAO.add(campeonato);
 
-			return listaCampeonatoJSON().toString();
+			return query.get("url");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao adicionar Campeonato";
+			return "<ERRO>Erro ao adicionar Campeonato";
 		}
 	}
 	public String atualizarCampeonato(Request request) {
@@ -52,14 +53,15 @@ public class CampeonatoService {
 
 		try {
 			Campeonato campeonato = new Campeonato();
+			campeonato.setId(Integer.parseInt(query.get("id")));
 			campeonato.setNome(query.get("nome"));
 			campeonato.setJogos(query.getInteger("jogos"));
 			campeonatoDAO.update(campeonato);
 
-			return listaCampeonatoJSON().toString();
+			return query.get("url");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao atualizar o campeonato";
+			return "<ERRO>Erro ao atualizar o campeonato";
 		}
 	}
 	public String removerCampeonato(Request request) {
@@ -71,10 +73,10 @@ public class CampeonatoService {
 			
 			campeonatoDAO.delete(campeonato);
 			
-			return listaCampeonatoJSON().toString();
+			return query.get("url");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "Erro ao excluir Jogador.";
+			return "<ERRO>Erro ao excluir Campeonato.";
 		}
 	}
 
